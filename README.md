@@ -1,6 +1,4 @@
 # Engram Quickstart
-git clone --recursive git@github.com:Znny/TiltedEvolution.git
-
 ## Windows Prerequisites:
 install Visual Studio 2022 Community from https://visualstudio.microsoft.com/downloads/
   - Select "Desktop development with C++" workload
@@ -8,13 +6,15 @@ install Visual Studio 2022 Community from https://visualstudio.microsoft.com/dow
   - Select "Windows 10 SDK (10.0.19041.0)" under "Individual components"
  
 install xmake - https://xmake.io/guide/quick-start.html
+
 install Node.js - https://nodejs.org/en/download
+
 install PNPM - https://pnpm.io/installation
 
 
-## Building (Windows Powershell):
-launch Powershell or cmd and run the following commands:
+## Cloning and initial Build (Windows Powershell):
 ```
+git clone --recursive git@github.com:Znny/TiltedEvolution.git
 cd TiltedEvolution
 ./Build.bat
 ```
