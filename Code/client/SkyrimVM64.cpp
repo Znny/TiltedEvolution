@@ -3,6 +3,33 @@
 
 extern std::unique_ptr<TiltedOnlineApp> g_appInstance;
 
+#include <windows.h>
+using EngramPreTickFn = void(__cdecl*)();
+
+static EngramPreTickFn pEngramPreTick = nullptr;
+static bool g_EngramChecked = false;
+
+static constexpr const wchar_t* kEngramDllName = L"engram_skyrim.dll";
+
+static void TryInitEngram()
+{
+    if (g_EngramChecked)
+        return;
+    g_EngramChecked = true;
+    HMODULE hEngram = GetModuleHandleW(kEngramDllName);
+    if (hEngram)
+    {
+        pEngramPreTick = reinterpret_cast<EngramPreTickFn>(GetProcAddress(hEngram, "engram_pre_tick"));
+        if (pEngramPreTick)
+        {
+            spdlog::info("[TiltedOnline] Engram detected, enabling integration.");
+        }
+    }
+}
+
+
+extern "C" void engram_pre_tick();
+
 #include <GameVM.h>
 
 struct Main;
@@ -31,6 +58,15 @@ int TP_MAKE_THISCALL(HookVMUpdate, VMContext, float a2)
 short TP_MAKE_THISCALL(HookMainLoop, Main)
 {
     TP_EMPTY_HOOK_PLACEHOLDER
+
+    if (!g_EngramChecked)
+    {
+        TryInitEngram();
+    }
+    if (pEngramPreTick)
+    {
+        pEngramPreTick();
+    }
 
     return TiltedPhoques::ThisCall(MainLoop, apThis);
 }
